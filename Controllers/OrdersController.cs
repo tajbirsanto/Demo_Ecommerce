@@ -102,18 +102,18 @@ public class OrdersController : ControllerBase
                 DeliveryHook = $"{baseUrl}/api/webhooks/call-delivery",
                 Messages = new Dictionary<string, string>
                 {
-                    { "welcome", $"Assalamu Alaikum {order.CustomerName}, Toto Company theke apnake dhonnobad. Apnar order er total holo {order.TotalAmount} Taka. Order confirm korte 1 press korun, cancel korte 2 press korun." },
+                    { "welcome", $"Assalamu Alaikum {order.CustomerName}, Toto Company theke apnake dhonnobad. Apnar order er total holo {order.TotalAmount} Taka. Order confirm korte 1 press korun, customer care protinidhir shathe kotha bolte ba kono query thakle 2 press korun." },
                     { "repeat", "2" },
                     { "sms", $"Toto Company te order korar jonno dhonnobad! Order ID: {order.Id}, Total: {order.TotalAmount} Taka" },
                     { "menuMessage1", "Apnar order confirm hoye geche. Amra khub shighroi delivery dibo. Toto Company er shathe thakaar jonno dhonnobad!" },
                     { "sms1", $"Order {order.Id} confirm hoyeche! Amra shighroi delivery dibo. Dhonnobad!" },
-                    { "menuMessage2", "Apnar order cancel kora hoyeche. Kono proshno thakle amader customer support e call korun. Dhonnobad." },
-                    { "sms2", $"Order {order.Id} cancel kora hoyeche apnar request onujayi." }
+                    { "menuMessage2", "Dhonnobad. Apnake amader customer care protinidhir shathe connect kora hochhe. Doya kore wait korun." },
+                    { "sms2", $"Apnar query er jonno dhonnobad. Amader customer care team apnake shighroi call korbe. Order ID: {order.Id}" }
                 },
                 Buttons = new List<CallButton>
                 {
                     new CallButton { Id = "menuMessage1", Key = "1", Value = "Confirm Order" },
-                    new CallButton { Id = "menuMessage2", Key = "2", Value = "Cancel Order" }
+                    new CallButton { Id = "menuMessage2", Key = "2", Value = "Customer Care" }
                 }
             };
 

@@ -142,6 +142,44 @@ public class ManyDialController : ControllerBase
             apiConfigured = !string.IsNullOrEmpty(_configuration["ManyDial:ApiKey"])
         });
     }
+
+    /// <summary>
+    /// Quick test call - bypasses service to test directly
+    /// </summary>
+    [HttpGet("test-call/{phoneNumber}")]
+    public async Task<ActionResult> TestCall(string phoneNumber)
+    {
+        var apiKey = _configuration["ManyDial:ApiKey"];
+        var callerId = _configuration["ManyDial:CallerId"];
+        
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
+        
+        var formData = new MultipartFormDataContent
+        {
+            { new StringContent("test-" + DateTime.Now.Ticks), "callPayload" },
+            { new StringContent(callerId ?? ""), "callerId" },
+            { new StringContent("1"), "perCallDuration" },
+            { new StringContent("{\"welcome\":\"আসসালামু আলাইকুম। এটা টোটো কোম্পানি থেকে টেস্ট কল। ধন্যবাদ।\",\"repeat\":\"1\",\"menuMessage1\":\"ধন্যবাদ\"}"), "messages" },
+            { new StringContent(phoneNumber.StartsWith("+") ? phoneNumber : "+" + phoneNumber), "number" },
+            { new StringContent("[{\"id\":\"menuMessage1\",\"key\":\"1\",\"value\":\"OK\"}]"), "buttons" },
+            { new StringContent("https://webhook.site/test"), "deliveryHook" }
+        };
+
+        _logger.LogInformation("TEST CALL - Calling {Number} with CallerId {CallerId}", phoneNumber, callerId);
+
+        var response = await httpClient.PostAsync("https://api.manydial.com/v1/portal/call/dispatch", formData);
+        var content = await response.Content.ReadAsStringAsync();
+        
+        _logger.LogInformation("TEST CALL Response: {Content}", content);
+        
+        return Ok(new { 
+            message = "Test call dispatched",
+            apiResponse = content,
+            phoneNumber = phoneNumber,
+            callerId = callerId
+        });
+    }
 }
 
 public class RenewRequest

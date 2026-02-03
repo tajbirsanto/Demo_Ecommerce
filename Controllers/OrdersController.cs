@@ -91,38 +91,38 @@ public class OrdersController : ControllerBase
         try
         {
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            var apiKey = _configuration["ManyDial:ApiKey"];
             var callerId = _configuration["ManyDial:CallerId"] ?? "";
             
-            var callRequest = new CallAutomationRequest
+            // Use direct HttpClient call - same approach that works in test endpoint
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
+            
+            // Build messages JSON with actual Bangla text
+            var messages = $"{{\"welcome\":\"আসসালামু আলাইকুম {order.CustomerName}, টোটো কোম্পানি থেকে আপনাকে ধন্যবাদ। আপনার অর্ডারের মোট মূল্য {order.TotalAmount} টাকা। অর্ডার কনফার্ম করতে ১ চাপুন, কাস্টমার কেয়ার এর সাথে কথা বলতে ২ চাপুন।\",\"repeat\":\"2\",\"menuMessage1\":\"আপনার অর্ডার কনফার্ম হয়ে গেছে। আমরা শীঘ্রই ডেলিভারি দিব। ধন্যবাদ!\",\"menuMessage2\":\"ধন্যবাদ। আপনাকে কাস্টমার কেয়ার এর সাথে কানেক্ট করা হচ্ছে।\"}}";
+            
+            var buttons = "[{\"id\":\"menuMessage1\",\"key\":\"1\",\"value\":\"Confirm\"},{\"id\":\"menuMessage2\",\"key\":\"2\",\"value\":\"Support\"}]";
+            
+            var formData = new MultipartFormDataContent
             {
-                CallPayload = order.Id,
-                CallerId = callerId,
-                PerCallDuration = "3",
-                Number = order.CustomerPhone,
-                DeliveryHook = $"{baseUrl}/api/webhooks/call-delivery",
-                Messages = new Dictionary<string, string>
-                {
-                    { "welcome", $"Assalamu Alaikum {order.CustomerName}, Toto Company theke apnake dhonnobad. Apnar order er total holo {order.TotalAmount} Taka. Order confirm korte 1 press korun, customer care protinidhir shathe kotha bolte ba kono query thakle 2 press korun." },
-                    { "repeat", "2" },
-                    { "sms", $"Toto Company te order korar jonno dhonnobad! Order ID: {order.Id}, Total: {order.TotalAmount} Taka" },
-                    { "menuMessage1", "Apnar order confirm hoye geche. Amra khub shighroi delivery dibo. Toto Company er shathe thakaar jonno dhonnobad!" },
-                    { "sms1", $"Order {order.Id} confirm hoyeche! Amra shighroi delivery dibo. Dhonnobad!" },
-                    { "menuMessage2", "Dhonnobad. Apnake amader customer care protinidhir shathe connect kora hochhe. Doya kore wait korun." },
-                    { "sms2", $"Apnar query er jonno dhonnobad. Amader customer care team apnake shighroi call korbe. Order ID: {order.Id}" }
-                },
-                Buttons = new List<CallButton>
-                {
-                    new CallButton { Id = "menuMessage1", Key = "1", Value = "Confirm Order" },
-                    new CallButton { Id = "menuMessage2", Key = "2", Value = "Customer Care" }
-                }
+                { new StringContent(order.Id), "callPayload" },
+                { new StringContent(callerId), "callerId" },
+                { new StringContent("2"), "perCallDuration" },
+                { new StringContent(messages), "messages" },
+                { new StringContent(order.CustomerPhone), "number" },
+                { new StringContent(buttons), "buttons" },
+                { new StringContent($"{baseUrl}/api/webhooks/call-delivery"), "deliveryHook" }
             };
 
-            var result = await _manyDialService.DispatchCallAsync(callRequest);
-            order.CallStatus = result.Success ? "Call Initiated" : "Call Failed";
-            order.CallPayload = order.Id;
+            _logger.LogInformation("Dispatching call to {Number} for order {OrderId}", order.CustomerPhone, order.Id);
+
+            var response = await httpClient.PostAsync("https://api.manydial.com/v1/portal/call/dispatch", formData);
+            var content = await response.Content.ReadAsStringAsync();
             
-            _logger.LogInformation("Call dispatch result for order {OrderId}: {Success} - {Message}", 
-                order.Id, result.Success, result.Message);
+            _logger.LogInformation("Call dispatch response for order {OrderId}: {Content}", order.Id, content);
+            
+            order.CallStatus = content.Contains("\"success\":true") ? "Call Initiated" : "Call Failed";
+            order.CallPayload = order.Id;
         }
         catch (Exception ex)
         {

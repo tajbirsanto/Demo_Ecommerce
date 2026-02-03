@@ -102,13 +102,13 @@ public class OrdersController : ControllerBase
                 DeliveryHook = $"{baseUrl}/api/webhooks/call-delivery",
                 Messages = new Dictionary<string, string>
                 {
-                    { "welcome", $"Hello {order.CustomerName}, thank you for your order at Toto Company. Your order total is {order.TotalAmount} Taka. Press 1 to confirm your order, Press 2 to cancel your order." },
+                    { "welcome", $"Assalamu Alaikum {order.CustomerName}, Toto Company theke apnake dhonnobad. Apnar order er total holo {order.TotalAmount} Taka. Order confirm korte 1 press korun, cancel korte 2 press korun." },
                     { "repeat", "2" },
-                    { "sms", $"Thank you for ordering at Toto Company! Order ID: {order.Id}, Total: {order.TotalAmount} Taka" },
-                    { "menuMessage1", "Your order has been confirmed. You will receive a delivery update soon. Thank you for shopping with us!" },
-                    { "sms1", $"Order {order.Id} confirmed! We will deliver your items soon. Thank you!" },
-                    { "menuMessage2", "Your order has been cancelled. If you have any questions, please call our customer support. Thank you." },
-                    { "sms2", $"Order {order.Id} has been cancelled as per your request." }
+                    { "sms", $"Toto Company te order korar jonno dhonnobad! Order ID: {order.Id}, Total: {order.TotalAmount} Taka" },
+                    { "menuMessage1", "Apnar order confirm hoye geche. Amra khub shighroi delivery dibo. Toto Company er shathe thakaar jonno dhonnobad!" },
+                    { "sms1", $"Order {order.Id} confirm hoyeche! Amra shighroi delivery dibo. Dhonnobad!" },
+                    { "menuMessage2", "Apnar order cancel kora hoyeche. Kono proshno thakle amader customer support e call korun. Dhonnobad." },
+                    { "sms2", $"Order {order.Id} cancel kora hoyeche apnar request onujayi." }
                 },
                 Buttons = new List<CallButton>
                 {

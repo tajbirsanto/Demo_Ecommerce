@@ -1,0 +1,263 @@
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 50%, #084298 100%);
+}
+
+.feature-cards .card {
+    transition: transform 0.3s ease;
+}
+
+.feature-cards .card:hover {
+    transform: translateY(-5px);
+}
+
+/* Product Cards */
+.product-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.product-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.product-card .badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+/* Cart Items */
+.cart-item {
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Order Cards */
+.order-card {
+    border-left: 4px solid #0d6efd;
+    transition: all 0.3s ease;
+}
+
+.order-card.status-confirmed {
+    border-left-color: #198754;
+}
+
+.order-card.status-cancelled {
+    border-left-color: #dc3545;
+}
+
+.order-card.status-pending {
+    border-left-color: #ffc107;
+}
+
+/* Webhook Logs */
+.webhook-log {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 12px;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.webhook-log .log-type {
+    color: #569cd6;
+}
+
+.webhook-log .log-time {
+    color: #6a9955;
+}
+
+/* API Response Log */
+#api-response-log {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Buttons */
+.btn-add-cart {
+    transition: all 0.3s ease;
+}
+
+.btn-add-cart:hover {
+    transform: scale(1.05);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: #dee2e6;
+}
+
+/* Quantity Controls */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-controls button {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Toast Customization */
+.toast {
+    min-width: 300px;
+}
+
+/* Loading Spinner */
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .feature-cards .card {
+        padding: 10px;
+    }
+    
+    .product-card .card-img-top {
+        height: 150px;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Badge Styling */
+.cart-count {
+    font-size: 10px;
+    padding: 4px 6px;
+}
+
+/* Call Status Badges */
+.call-status-badge {
+    font-size: 11px;
+    padding: 4px 8px;
+}
+
+/* Modal Improvements */
+.modal-content {
+    border: none;
+    border-radius: 12px;
+}
+
+/* Card Hover Effects */
+.card {
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Price Styling */
+.price {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+/* Section Headers */
+.content-section h2 {
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #0d6efd;
+}
+
+/* Navbar Improvements */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+/* Footer Styling */
+footer {
+    margin-top: auto;
+}
+
+/* Call Center Iframe */
+#call-center-iframe {
+    border-radius: 0 0 8px 8px;
+}
+
+/* Alert Improvements */
+.alert {
+    border: none;
+    border-radius: 8px;
+}
+
+/* Form Improvements */
+.form-control:focus,
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+/* Keyboard Key Styling */
+kbd {
+    background-color: #212529;
+    border-radius: 4px;
+    padding: 2px 6px;
+}

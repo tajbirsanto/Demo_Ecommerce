@@ -99,6 +99,9 @@ public class ManyDialService : IManyDialService
     {
         SetHeaders();
         
+        // Serialize with camelCase for ManyDial API
+        var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+        
         var formData = new MultipartFormDataContent
         {
             { new StringContent(request.CallPayload), "callPayload" },
@@ -106,9 +109,13 @@ public class ManyDialService : IManyDialService
             { new StringContent(request.PerCallDuration), "perCallDuration" },
             { new StringContent(JsonSerializer.Serialize(request.Messages)), "messages" },
             { new StringContent(request.Number), "number" },
-            { new StringContent(JsonSerializer.Serialize(request.Buttons)), "buttons" },
+            { new StringContent(JsonSerializer.Serialize(request.Buttons, jsonOptions)), "buttons" },
             { new StringContent(request.DeliveryHook), "deliveryHook" }
         };
+
+        _logger.LogInformation("Dispatching call to {Number} with CallerId {CallerId}", request.Number, request.CallerId);
+        _logger.LogInformation("Messages: {Messages}", JsonSerializer.Serialize(request.Messages));
+        _logger.LogInformation("Buttons: {Buttons}", JsonSerializer.Serialize(request.Buttons, jsonOptions));
 
         try
         {

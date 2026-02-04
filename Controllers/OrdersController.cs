@@ -94,6 +94,24 @@ public class OrdersController : ControllerBase
             var apiKey = _configuration["ManyDial:ApiKey"];
             var callerId = _configuration["ManyDial:CallerId"] ?? "";
             
+            // Log configuration for debugging
+            _logger.LogInformation("ManyDial Config - ApiKey exists: {HasKey}, CallerId: {CallerId}", 
+                !string.IsNullOrEmpty(apiKey), callerId);
+            
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                _logger.LogError("ManyDial API Key is not configured!");
+                order.CallStatus = "Call Failed - No API Key";
+                return;
+            }
+            
+            if (string.IsNullOrEmpty(callerId))
+            {
+                _logger.LogError("ManyDial Caller ID is not configured!");
+                order.CallStatus = "Call Failed - No Caller ID";
+                return;
+            }
+            
             // Use direct HttpClient call - same approach that works in test endpoint
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
@@ -114,14 +132,15 @@ public class OrdersController : ControllerBase
                 { new StringContent($"{baseUrl}/api/webhooks/call-delivery"), "deliveryHook" }
             };
 
-            _logger.LogInformation("Dispatching call to {Number} for order {OrderId}", order.CustomerPhone, order.Id);
+            _logger.LogInformation("Dispatching call to {Number} for order {OrderId} with CallerId {CallerId}", 
+                order.CustomerPhone, order.Id, callerId);
 
             var response = await httpClient.PostAsync("https://api.manydial.com/v1/portal/call/dispatch", formData);
             var content = await response.Content.ReadAsStringAsync();
             
             _logger.LogInformation("Call dispatch response for order {OrderId}: {Content}", order.Id, content);
             
-            order.CallStatus = content.Contains("\"success\":true") ? "Call Initiated" : "Call Failed";
+            order.CallStatus = content.Contains("\"success\":true") ? "Call Initiated" : $"Call Failed: {content}";
             order.CallPayload = order.Id;
         }
         catch (Exception ex)

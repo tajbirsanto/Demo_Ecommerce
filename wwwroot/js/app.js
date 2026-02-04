@@ -67,7 +67,7 @@ function renderProducts(productsToRender) {
             <div class="card product-card h-100 position-relative">
                 <span class="badge bg-primary">${product.category}</span>
                 <img src="${product.imageUrl}" class="card-img-top" alt="${product.name}" 
-                     onerror="this.src='https://via.placeholder.com/300x200?text=Product'">
+                     onerror="this.onerror=null; this.src='https://placehold.co/300x200/e9ecef/495057?text=No+Image'">
                 <div class="card-body d-flex flex-column">
                     <h6 class="card-title">${product.name}</h6>
                     <p class="card-text small text-muted flex-grow-1">${product.description.substring(0, 60)}...</p>
@@ -183,7 +183,7 @@ function renderCart() {
     cartItems.innerHTML = cart.map(item => `
         <div class="cart-item d-flex align-items-center">
             <img src="${item.imageUrl}" alt="${item.productName}" class="me-3"
-                 onerror="this.src='https://via.placeholder.com/80?text=Product'">
+                 onerror="this.onerror=null; this.src='https://placehold.co/80x80/e9ecef/495057?text=Item'">
             <div class="flex-grow-1">
                 <h6 class="mb-1">${item.productName}</h6>
                 <span class="text-primary fw-bold">৳${item.price.toFixed(2)}</span>

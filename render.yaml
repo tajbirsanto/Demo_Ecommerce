@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: toto-ecommerce
+    runtime: docker
+    dockerfilePath: ./Demo_Ecommerce/Dockerfile
+    dockerContext: ./Demo_Ecommerce
+    plan: free
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        value: "Data Source=/data/demoecommerce.db"
+    disk:
+      name: sqlite-data
+      mountPath: /data
+      sizeGB: 1

@@ -344,7 +344,7 @@ async function placeOrder() {
         showToast('অর্ডার ব্যর্থ হয়েছে! আবার চেষ্টা করুন।', 'danger');
     } finally {
         btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-telephone-outbound me-2"></i>অর্ডার করুন';
+        btn.innerHTML = '<i class="bi bi-bag-check me-2"></i>অর্ডার করুন';
     }
 }
 

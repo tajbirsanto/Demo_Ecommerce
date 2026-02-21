@@ -79,9 +79,7 @@ public class OrdersController : ControllerBase
 
         _logger.LogInformation("Order created: {OrderId}", order.Id);
 
-        // Trigger automated call to confirm order using ManyDial
-        await TriggerOrderConfirmationCall(order);
-        await _context.SaveChangesAsync(); // Save call status
+        // Call is NOT auto-triggered — admin initiates calls manually from the dashboard
 
         return CreatedAtAction(nameof(GetById), new { id = order.Id }, order);
     }

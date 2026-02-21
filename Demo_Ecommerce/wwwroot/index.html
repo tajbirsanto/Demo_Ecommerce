@@ -187,7 +187,7 @@
                     <div class="card border-0 shadow-sm mt-3 border-start border-3 border-success">
                         <div class="card-body">
                             <h6 class="text-success fw-bold"><i class="bi bi-telephone-fill me-2"></i>ManyDial কল ফিচার</h6>
-                            <p class="small mb-2">অর্ডারের পর আপনি একটি অটোমেটিক কল পাবেন:</p>
+                            <p class="small mb-2">অর্ডারের পর আমাদের টিম আপনাকে কল করে কনফার্ম করবে:</p>
                             <ul class="small mb-0 ps-3">
                                 <li><kbd>১</kbd> চাপুন → অর্ডার কনফার্ম</li>
                                 <li><kbd>২</kbd> চাপুন → আমাদের সাথে সরাসরি কথা বলুন</li>
@@ -246,8 +246,8 @@
                             <div class="alert alert-info border-0 mt-4 d-flex align-items-start gap-3">
                                 <i class="bi bi-telephone-outbound fs-3 text-primary"></i>
                                 <div>
-                                    <strong>ManyDial কল কনফার্মেশন</strong>
-                                    <p class="mb-0 small">অর্ডার দেওয়ার পর আপনার ফোনে কল আসবে। <kbd>১</kbd> কনফার্ম, <kbd>২</kbd> আমাদের সাথে কথা বলুন।</p>
+                                    <strong>অর্ডার কনফার্মেশন</strong>
+                                    <p class="mb-0 small">অর্ডার দেওয়ার পর আমাদের টিম আপনাকে কল করে অর্ডার কনফার্ম করবে।</p>
                                 </div>
                             </div>
                         </form>
@@ -255,7 +255,7 @@
                     <div class="modal-footer border-0 px-4 pb-4">
                         <button type="button" class="btn btn-light btn-lg" data-bs-dismiss="modal">বাতিল</button>
                         <button type="button" class="btn btn-success btn-lg" onclick="placeOrder()" id="place-order-btn">
-                            <i class="bi bi-telephone-outbound me-2"></i>অর্ডার করুন
+                            <i class="bi bi-bag-check me-2"></i>অর্ডার করুন
                         </button>
                     </div>
                 </div>
@@ -423,15 +423,15 @@
                         <div class="checkmark-circle"><i class="bi bi-check-lg"></i></div>
                     </div>
                     <h3 class="fw-bold mb-2">অর্ডার সফল হয়েছে!</h3>
-                    <p class="text-muted mb-4">অল্প সময়ের মধ্যে আপনার ফোনে কল আসবে।</p>
+                    <p class="text-muted mb-4">আপনার অর্ডারটি সফলভাবে জমা হয়েছে। আমাদের টিম শীঘ্রই আপনাকে কল করে কনফার্ম করবে।</p>
                     <div class="alert alert-light border text-start">
                         <div class="d-flex align-items-center gap-2 mb-2">
-                            <span class="badge bg-success rounded-pill">১</span>
-                            <span>চাপুন → <strong>অর্ডার কনফার্ম</strong></span>
+                            <i class="bi bi-check-circle-fill text-success me-1"></i>
+                            <span>অর্ডার জমা হয়েছে — <strong>পেন্ডিং</strong></span>
                         </div>
                         <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-primary rounded-pill">২</span>
-                            <span>চাপুন → <strong>আমাদের সাথে কথা বলুন</strong> (কল ফরওয়ার্ড)</span>
+                            <i class="bi bi-telephone-fill text-primary me-1"></i>
+                            <span>অ্যাডমিন কল করলে <kbd>১</kbd> কনফার্ম, <kbd>২</kbd> কথা বলুন</span>
                         </div>
                     </div>
                     <p class="small text-muted mt-3">অর্ডার ID: <code id="success-order-id"></code></p>

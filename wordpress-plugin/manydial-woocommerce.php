@@ -48,6 +48,12 @@ function manydial_register_settings() {
     register_setting('manydial_settings', 'manydial_api_key');
     register_setting('manydial_settings', 'manydial_caller_id');
     register_setting('manydial_settings', 'manydial_forward_number');
+    register_setting('manydial_settings', 'manydial_business_name', [
+        'default' => ''
+    ]);
+    register_setting('manydial_settings', 'manydial_currency', [
+        'default' => 'টাকা'
+    ]);
     register_setting('manydial_settings', 'manydial_language', [
         'default' => 'bn-BD'
     ]);
@@ -57,6 +63,20 @@ function manydial_register_settings() {
     register_setting('manydial_settings', 'manydial_auto_call', [
         'default' => 'no'
     ]);
+    register_setting('manydial_settings', 'manydial_voice_template_bn', [
+        'default' => manydial_default_template_bn()
+    ]);
+    register_setting('manydial_settings', 'manydial_voice_template_en', [
+        'default' => manydial_default_template_en()
+    ]);
+}
+
+function manydial_default_template_bn() {
+    return "আসসালামু আলাইকুম {customer_name} ভাই। {business_name} থেকে বলছি। আপনার অর্ডার নম্বর {order_id} সফলভাবে রিসিভ হয়েছে। আপনি অর্ডার করেছেন {items}, মোট {total} {currency}। অর্ডার কনফার্ম করতে 1 চাপুন। আমাদের সাথে কথা বলতে 2 চাপুন। ক্যান্সেল করতে 3 চাপুন।";
+}
+
+function manydial_default_template_en() {
+    return "Hello {customer_name}. This is {business_name}. Your order number {order_id} has been received. You ordered {items}, total {total} {currency}. Press 1 to confirm your order. Press 2 to speak with us. Press 3 to cancel.";
 }
 
 function manydial_settings_page_html() {
@@ -117,6 +137,24 @@ function manydial_settings_page_html() {
                     </td>
                 </tr>
                 <tr>
+                    <th scope="row"><label for="manydial_business_name">Business Name</label></th>
+                    <td>
+                        <input type="text" id="manydial_business_name" name="manydial_business_name" 
+                               value="<?php echo esc_attr(get_option('manydial_business_name')); ?>" 
+                               class="regular-text" placeholder="আপনার ব্যবসার নাম">
+                        <p class="description">Your business/shop name (used in voice message as <code>{business_name}</code>).</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="manydial_currency">Currency Word</label></th>
+                    <td>
+                        <input type="text" id="manydial_currency" name="manydial_currency" 
+                               value="<?php echo esc_attr(get_option('manydial_currency', 'টাকা')); ?>" 
+                               class="small-text" placeholder="টাকা">
+                        <p class="description">Currency word spoken in the call (e.g., টাকা, taka, rupees, dollars).</p>
+                    </td>
+                </tr>
+                <tr>
                     <th scope="row"><label for="manydial_auto_call">Auto-Call on New Order</label></th>
                     <td>
                         <select id="manydial_auto_call" name="manydial_auto_call">
@@ -127,6 +165,42 @@ function manydial_settings_page_html() {
                     </td>
                 </tr>
             </table>
+
+            <hr>
+            <h2>Voice Message Templates</h2>
+            <p>Customize what the customer hears during the call. Use these placeholders:</p>
+            <table class="widefat" style="max-width:600px;margin-bottom:15px;">
+                <thead><tr><th>Placeholder</th><th>Replaced With</th></tr></thead>
+                <tbody>
+                    <tr><td><code>{customer_name}</code></td><td>Customer's full name</td></tr>
+                    <tr><td><code>{business_name}</code></td><td>Your business name (from above)</td></tr>
+                    <tr><td><code>{order_id}</code></td><td>Order number</td></tr>
+                    <tr><td><code>{items}</code></td><td>Product names &amp; quantities (max 3)</td></tr>
+                    <tr><td><code>{total}</code></td><td>Order total amount</td></tr>
+                    <tr><td><code>{currency}</code></td><td>Currency word (from above)</td></tr>
+                    <tr><td><code>{phone}</code></td><td>Customer phone number</td></tr>
+                </tbody>
+            </table>
+
+            <table class="form-table">
+                <tr>
+                    <th scope="row"><label for="manydial_voice_template_bn">বাংলা Template</label></th>
+                    <td>
+                        <textarea id="manydial_voice_template_bn" name="manydial_voice_template_bn" 
+                                  rows="5" class="large-text"><?php echo esc_textarea(get_option('manydial_voice_template_bn', manydial_default_template_bn())); ?></textarea>
+                        <p class="description">Used when language is set to বাংলা (Bangla). <a href="#" onclick="document.getElementById('manydial_voice_template_bn').value='<?php echo esc_js(manydial_default_template_bn()); ?>';return false;">Reset to default</a></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="manydial_voice_template_en">English Template</label></th>
+                    <td>
+                        <textarea id="manydial_voice_template_en" name="manydial_voice_template_en" 
+                                  rows="5" class="large-text"><?php echo esc_textarea(get_option('manydial_voice_template_en', manydial_default_template_en())); ?></textarea>
+                        <p class="description">Used when language is set to English. <a href="#" onclick="document.getElementById('manydial_voice_template_en').value='<?php echo esc_js(manydial_default_template_en()); ?>';return false;">Reset to default</a></p>
+                    </td>
+                </tr>
+            </table>
+
             <?php submit_button('Save ManyDial Settings'); ?>
         </form>
 
@@ -342,6 +416,8 @@ function manydial_dispatch_call($order) {
         }
     }
 
+    $business_name = get_option('manydial_business_name', '');
+    $currency = get_option('manydial_currency', 'টাকা');
     $customer_name = trim($order->get_billing_first_name() . ' ' . $order->get_billing_last_name());
     $order_total = $order->get_total();
     $order_id = $order->get_id();
@@ -352,25 +428,29 @@ function manydial_dispatch_call($order) {
     }
     $items_text = implode(', ', array_slice($items, 0, 3)); // Limit to 3 items in voice
     if (count($items) > 3) {
-        $items_text .= ' সহ আরও পণ্য';
+        if ($language === 'bn-BD') {
+            $items_text .= ' সহ আরও পণ্য';
+        } else {
+            $items_text .= ' and more items';
+        }
     }
 
-    // Build the IVR voice message
+    // Build the IVR voice message from customizable template
     if ($language === 'bn-BD') {
-        $voice_message = "আসসালামু আলাইকুম {$customer_name} ভাই। "
-            . "আপনার অর্ডার নম্বর {$order_id} সফলভাবে রিসিভ হয়েছে। "
-            . "আপনি অর্ডার করেছেন {$items_text}, মোট {$order_total} টাকা। "
-            . "অর্ডার কনফার্ম করতে 1 চাপুন। "
-            . "আমাদের সাথে কথা বলতে 2 চাপুন। "
-            . "ক্যান্সেল করতে 3 চাপুন।";
+        $template = get_option('manydial_voice_template_bn', manydial_default_template_bn());
     } else {
-        $voice_message = "Hello {$customer_name}. "
-            . "Your order number {$order_id} has been received. "
-            . "You ordered {$items_text}, total {$order_total} taka. "
-            . "Press 1 to confirm your order. "
-            . "Press 2 to speak with us. "
-            . "Press 3 to cancel.";
+        $template = get_option('manydial_voice_template_en', manydial_default_template_en());
     }
+
+    // Replace all placeholders with actual order data
+    $voice_message = str_replace(
+        ['{customer_name}', '{business_name}', '{order_id}', '{items}', '{total}', '{currency}', '{phone}'],
+        [$customer_name, $business_name, $order_id, $items_text, $order_total, $currency, $phone],
+        $template
+    );
+
+    // Clean up double spaces if business_name is empty
+    $voice_message = preg_replace('/\s+/', ' ', trim($voice_message));
 
     // Build webhook URL for delivery result
     $webhook_url = rest_url('manydial/v1/webhook');
@@ -709,6 +789,9 @@ function manydial_activate() {
     add_option('manydial_language', 'bn-BD');
     add_option('manydial_voice', 'female');
     add_option('manydial_auto_call', 'no');
+    add_option('manydial_currency', 'টাকা');
+    add_option('manydial_voice_template_bn', manydial_default_template_bn());
+    add_option('manydial_voice_template_en', manydial_default_template_en());
     
     // Flush rewrite rules for REST API endpoint
     flush_rewrite_rules();

@@ -7,6 +7,9 @@ obj/
 *.db-wal
 *.db-shm
 
+## Secrets - never commit real API keys
+appsettings.Development.json
+
 ## IDE
 .vs/
 .vscode/

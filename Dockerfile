@@ -18,5 +18,11 @@ EXPOSE 10000
 ENV ASPNETCORE_URLS=http://+:10000
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENV ConnectionStrings__DefaultConnection="Data Source=demoecommerce.db"
+
+# ManyDial config — set these as environment variables in Render/hosting dashboard
+# ENV ManyDial__ApiKey=your-api-key-here
+# ENV ManyDial__CallerId=+880XXXXXXXXXX
+# ENV ManyDial__ForwardNumber=+880XXXXXXXXXX
+
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Demo_Ecommerce.dll"]
